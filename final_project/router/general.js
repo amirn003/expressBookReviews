@@ -6,8 +6,18 @@ const public_users = express.Router();
 
 
 public_users.post("/register", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const username = req.body.username;
+    const password = req.body.password;
+  
+    if (username && password) {
+      if (!isValid(username)) { 
+        users.push({"username":username,"password":password});
+        return res.status(200).json({message: "User successfully registred. Now you can login"});
+      } else {
+        return res.status(404).json({message: "User already exists!"});    
+      }
+    } 
+    return res.status(404).json({message: "Unable to register user."});
 });
 
 // Get the book list available in the shop
@@ -44,14 +54,46 @@ public_users.get('/author/:author',function (req, res) {
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const title = req.params.title;
+    found = 0
+    const selectedBooks = [];
+    for (val in books){
+        if (books[val].title == title){
+            console.log(books[val].title);
+            selectedBooks.push(books[val]);
+            found = 1;
+        }
+    }
+    if(found){
+        res.send(selectedBooks);
+    }
+    else{
+        res.send("Unable to find the author!");
+    }
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const isbnrq = req.params.isbn;
+    const isbn = parseInt(isbnrq);
+    found = 0;
+    const review = [];
+
+    for (val in books){
+        
+        if (isbn == val){
+            console.log(val+" : "+ books[val]);
+            review.push(books[val].reviews)
+            found = 1;
+        }
+    }  
+    if(found){
+        res.send(review);
+    }
+    else{
+        res.send("Unable to find the isbn!");
+    }
 });
+
 
 module.exports.general = public_users;
