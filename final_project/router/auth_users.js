@@ -17,19 +17,70 @@ const isValid = (username)=>{ //returns boolean
 }
 
 const authenticatedUser = (username,password)=>{ //returns boolean
-//write code to check if username and password match the one we have in records.
+    let validusers = users.filter((user)=>{
+        return (user.username === username && user.password === password)
+      });
+      if(validusers.length > 0){
+        return true;
+      } else {
+        return false;
+      }
 }
 
 //only registered users can login
 regd_users.post("/login", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const username = req.body.username;
+    const password = req.body.password;
+  
+    if (!username || !password) {
+        return res.status(404).json({message: "Error logging in"});
+    }
+  
+    if (authenticatedUser(username,password)) {
+      let accessToken = jwt.sign({
+        data: password
+      }, 'access', { expiresIn: 60 * 60 });
+  
+      req.session.authorization = {
+        accessToken,username
+    }
+    return res.status(200).send("User successfully logged in");
+    } else {
+      return res.status(208).json({message: "Invalid Login. Check username and password"});
+    }
 });
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const isbn = req.params.isbn;
+
+    console.log(isbn);
+    /*
+    if (filtered_books.length > 0) {
+        let filtered_user = filtered_users[0];
+        let DOB = req.query.DOB;
+        let firstName = req.query.firstName;
+        let lastName =req.query.lastName;
+        if(DOB) {
+            filtered_user.DOB = DOB
+        }
+        else if(firstName){
+            filtered_user.firstName = firstName;
+        }
+        else if(lastName){
+            filtered_user.lastName = lastName;
+        }
+        else{// modify email
+            filtered_user.email = email;
+        }
+        users = users.filter((user) => user.email != email);
+        users.push(filtered_user);
+        res.send(`User with the email  ${email} updated.`);
+    }
+    else{
+        res.send("Unable to find user!");
+    }
+    */
 });
 
 module.exports.authenticated = regd_users;
