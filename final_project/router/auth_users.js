@@ -53,35 +53,27 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn;
+    const username = req.body.username;
 
-    console.log(isbn);
-    /*
-    if (filtered_books.length > 0) {
-        let filtered_user = filtered_users[0];
-        let DOB = req.query.DOB;
-        let firstName = req.query.firstName;
-        let lastName =req.query.lastName;
-        if(DOB) {
-            filtered_user.DOB = DOB
+    if(isbn){
+        let review = req.query.review;
+        if(review){
+            books[isbn].reviews[username] = review
+
         }
-        else if(firstName){
-            filtered_user.firstName = firstName;
-        }
-        else if(lastName){
-            filtered_user.lastName = lastName;
-        }
-        else{// modify email
-            filtered_user.email = email;
-        }
-        users = users.filter((user) => user.email != email);
-        users.push(filtered_user);
-        res.send(`User with the email  ${email} updated.`);
+        res.send(books[isbn]);    
     }
     else{
-        res.send("Unable to find user!");
+        res.send("Unable to find this isbn!");
     }
-    */
 });
+
+
+// Delete a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+
+});
+
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
