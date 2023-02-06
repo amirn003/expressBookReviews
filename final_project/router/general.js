@@ -21,17 +21,43 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
+/*
 public_users.get('/',function (req, res) {
     res.send(JSON.stringify(books,null,4));
 });
+*/
+
+let myPromiseGetBooks = new Promise((resolve,reject) => {
+    public_users.get('/',function (req, res) {
+        res.send(JSON.stringify(books,null,4));
+    });
+});
+
+myPromiseGetBooks.then((successMessage) => {
+    console.log("From Callback " + successMessage)
+});
 
 // Get book details based on ISBN
+/*
 public_users.get('/isbn/:isbn',function (req, res) {
     const isbn = req.params.isbn;
     res.send(books[isbn])
  });
+*/
+
+let myPromiseGetByIsbn = new Promise((resolve,reject) => {
+    public_users.get('/isbn/:isbn',function (req, res) {
+        const isbn = req.params.isbn;
+        res.send(books[isbn])
+    });
+});
+
+myPromiseGetByIsbn.then((successMessage) => {
+    console.log("From Callback " + successMessage)
+});
   
 // Get book details based on author
+/*
 public_users.get('/author/:author',function (req, res) {
     const author = req.params.author;
     found = 0
@@ -48,11 +74,37 @@ public_users.get('/author/:author',function (req, res) {
     }
     else{
         res.send("Unable to find the author!");
-    }
-    
+    }  
+});
+*/
+
+let myPromiseGetByAuthor = new Promise((resolve,reject) => {
+    public_users.get('/author/:author',function (req, res) {
+        const author = req.params.author;
+        found = 0
+        const selectedBooks = [];
+        for (val in books){
+            if (books[val].author == author){
+                console.log(books[val].author);
+                selectedBooks.push(books[val]);
+                found = 1;
+            }
+        }
+        if(found){
+            res.send(selectedBooks);
+        }
+        else{
+            res.send("Unable to find the author!");
+        }  
+    });
+});
+
+myPromiseGetByAuthor.then((successMessage) => {
+    console.log("From Callback " + successMessage)
 });
 
 // Get all books based on title
+/*
 public_users.get('/title/:title',function (req, res) {
     const title = req.params.title;
     found = 0
@@ -71,6 +123,33 @@ public_users.get('/title/:title',function (req, res) {
         res.send("Unable to find the author!");
     }
 });
+*/
+
+let myPromiseGetByTitle = new Promise((resolve,reject) => {
+    public_users.get('/title/:title',function (req, res) {
+        const title = req.params.title;
+        found = 0
+        const selectedBooks = [];
+        for (val in books){
+            if (books[val].title == title){
+                console.log(books[val].title);
+                selectedBooks.push(books[val]);
+                found = 1;
+            }
+        }
+        if(found){
+            res.send(selectedBooks);
+        }
+        else{
+            res.send("Unable to find the author!");
+        }
+    });
+});
+
+myPromiseGetByTitle.then((successMessage) => {
+    console.log("From Callback " + successMessage)
+});
+
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
